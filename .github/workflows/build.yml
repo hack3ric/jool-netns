@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build Debian package
         uses: jtdor/build-deb-action@v1
@@ -18,7 +18,7 @@ jobs:
           buildpackage-opts: -b -us -uc
 
       - name: Upload Debian artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: debian-package
           path: debian/artifacts/
