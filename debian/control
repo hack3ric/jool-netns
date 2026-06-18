@@ -1,0 +1,21 @@
+Source: jool-netns
+Section: net
+Priority: optional
+Maintainer: Eric Long <i@hack3r.moe>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: jool-netns
+Architecture: all
+Depends:
+ ${misc:Depends},
+ iproute2,
+ jool-tools,
+ kmod,
+ nftables,
+ procps
+Description: systemd-managed Jool instances inside dedicated network namespaces
+ jool-netns wraps Jool NAT64 or SIIT instances in dedicated network namespaces.
+ It creates a namespace and veth pair, loads a standard Jool JSON config, and
+ can optionally install host-side routes and masquerade rules for the namespace.
