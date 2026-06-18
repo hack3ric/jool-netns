@@ -2,31 +2,20 @@
 
 `jool-netns` wraps a Jool instance in a dedicated network namespace and exposes it as a oneshot systemd template service.
 
-The wrapper does three things:
-
-- creates a namespace and veth pair for the instance
-- loads a normal Jool JSON config with `jool file handle` or `jool_siit file handle`
-- adds the host-side nftables masquerade rule for packets entering from the namespace veth
-
-It does not create extra host routes.
-
-## Files
-
-- `up.sh`: bring one instance up
-- `down.sh`: tear one instance down
-- `common.sh`: shared helper library for both scripts
-- `jool-netns@.service`: template unit for systemd
-- `jool-netns.env.example`: sample per-instance settings
+It creates a netns and veth pair for the instance, loads a normal Jool JSON config with `jool file handle` or `jool_siit file handle`, and set up necessary routing rules to allow you to route packets through the Jool-enabled netns like a new node.
 
 ## Install
 
 ```sh
-install -Dm0644 common.sh /usr/local/lib/jool-netns/common.sh
-install -Dm0755 up.sh /usr/local/lib/jool-netns/up.sh
-install -Dm0755 down.sh /usr/local/lib/jool-netns/down.sh
-install -Dm0644 jool-netns@.service /etc/systemd/system/jool-netns@.service
-install -Dm0644 jool-netns.env.example /etc/jool-netns/example.env
+make install
 systemctl daemon-reload
+```
+
+Common overrides:
+
+```sh
+make install PREFIX=/usr
+make install PREFIX=/opt/jool SYSCONFDIR=/etc DESTDIR=/tmp/jool-netns-stage
 ```
 
 Then edit `/etc/jool-netns/example.env` to point at the desired Jool JSON file.
