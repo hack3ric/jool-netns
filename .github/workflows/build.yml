@@ -7,32 +7,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: debian:bookworm
 
     steps:
-      - name: Install build dependencies
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends \
-            ca-certificates \
-            build-essential \
-            debhelper \
-            devscripts \
-            dpkg-dev \
-            fakeroot
-
       - name: Check out repository
         uses: actions/checkout@v4
 
       - name: Build Debian package
-        run: dpkg-buildpackage -us -uc -b
+        uses: jtdor/build-deb-action@v1
+        with:
+          buildpackage-opts: -b -us -uc
 
       - name: Upload Debian artifacts
         uses: actions/upload-artifact@v4
         with:
           name: debian-package
-          path: |
-            ../*.deb
-            ../*.buildinfo
-            ../*.changes
+          path: debian/artifacts/
