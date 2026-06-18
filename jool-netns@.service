@@ -1,0 +1,24 @@
+[Unit]
+Description=Jool instance inside a dedicated network namespace (%i)
+Documentation=https://nicmx.github.io/Jool/en/documentation.html
+After=network.target
+ConditionPathExists=/etc/jool-netns/%i.env
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+EnvironmentFile=/etc/jool-netns/%i.env
+ExecStart=/usr/local/lib/jool-netns/up.sh %i
+ExecStop=/usr/local/lib/jool-netns/down.sh %i
+
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_SYS_MODULE CAP_NET_ADMIN
+NoNewPrivileges=yes
+ProtectKernelModules=no
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictRealtime=yes
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target
