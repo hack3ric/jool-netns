@@ -49,6 +49,7 @@ Optional keys:
 - `NS_IPV6`
 - `HOST_ROUTE4`
 - `HOST_ROUTE6`
+- `HOST_MASQUERADE`
 - `HOST_IPV4_FORWARD`
 - `HOST_IPV6_FORWARD`
 - `JOOL_NFT_TABLE`
@@ -61,6 +62,12 @@ If you want the host itself to send traffic into the translator, set:
 - `HOST_ROUTE4` to the pool4 prefix or address range used by the Jool config
 
 `up.sh` installs those routes through the namespace-side peers, and `down.sh` removes them.
+
+`HOST_MASQUERADE` controls whether the wrapper creates the host-side nftables rule:
+
+- enabled by default
+- keep it enabled for the current veth-behind-host pattern, where the namespace reaches the IPv4 network through the host
+- disable it only if the namespace already has proper routed IPv4 egress and you do not want double NAT
 
 If your JSON uses the `iptables` Jool framework instead of `netfilter`, this project still loads the instance correctly, but you must manage the separate `JOOL` or `JOOL_SIIT` iptables rules yourself. The nftables rule created by `up.sh` is only the host-side masquerade rule from the original TODO.
 
