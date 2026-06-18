@@ -45,7 +45,11 @@ Optional keys:
 - `HOST_IPV6_FORWARD`
 - `JOOL_NFT_TABLE`
 
-`HOST_*` specifies if this wrapper creates some host rules for you. Default to off so you can configure them yourself.
+`HOST_*` controls optional host-side routing and NAT integration:
+
+- host routes are only created when `HOST_ROUTE4` or `HOST_ROUTE6` is set
+- host masquerade is off by default unless `HOST_MASQUERADE=1`
+- host forwarding is off by default unless `HOST_IPV4_FORWARD=1` or `HOST_IPV6_FORWARD=1`
 
 If your JSON uses the `iptables` Jool framework instead of `netfilter`, this project still loads the instance correctly, but you must manage the separate `JOOL` or `JOOL_SIIT` iptables rules yourself.
 
@@ -61,4 +65,15 @@ Without systemd, you can run the scripts directly:
 ```sh
 JOOL_ENV_FILE=/etc/jool-netns/example.env ./up.sh example
 JOOL_ENV_FILE=/etc/jool-netns/example.env ./down.sh example
+```
+
+## Debian Packaging
+
+The repository includes a `debian/` directory and a GitHub Actions workflow that
+builds a Debian binary package on every push.
+
+To build locally:
+
+```sh
+dpkg-buildpackage -us -uc -b
 ```

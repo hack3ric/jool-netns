@@ -122,7 +122,7 @@ bool_is_true() {
 }
 
 nat_rule_enabled() {
-  bool_is_true "${HOST_MASQUERADE:-1}"
+  bool_is_true "${HOST_MASQUERADE:-0}"
   result=$?
 
   case $result in
@@ -139,7 +139,7 @@ nat_rule_enabled() {
 }
 
 enable_host_forwarding() {
-  bool_is_true "${HOST_IPV4_FORWARD:-1}"
+  bool_is_true "${HOST_IPV4_FORWARD:-0}"
   result=$?
   case $result in
   0)
@@ -152,7 +152,7 @@ enable_host_forwarding() {
     ;;
   esac
 
-  bool_is_true "${HOST_IPV6_FORWARD:-1}"
+  bool_is_true "${HOST_IPV6_FORWARD:-0}"
   result=$?
   case $result in
   0)
