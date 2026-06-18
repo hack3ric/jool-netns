@@ -14,12 +14,14 @@ It does not create extra host routes.
 
 - `up.sh`: bring one instance up
 - `down.sh`: tear one instance down
+- `common.sh`: shared helper library for both scripts
 - `jool-netns@.service`: template unit for systemd
 - `jool-netns.env.example`: sample per-instance settings
 
 ## Install
 
 ```sh
+install -Dm0644 common.sh /usr/local/lib/jool-netns/common.sh
 install -Dm0755 up.sh /usr/local/lib/jool-netns/up.sh
 install -Dm0755 down.sh /usr/local/lib/jool-netns/down.sh
 install -Dm0644 jool-netns@.service /etc/systemd/system/jool-netns@.service
@@ -54,31 +56,9 @@ Optional keys:
 - `HOST_IPV6_FORWARD`
 - `JOOL_NFT_TABLE`
 
-The Jool JSON file must be a normal file accepted by the upstream tools, such as `/etc/jool/jool.conf` or `/etc/jool/jool_siit.conf`. The file itself is responsible for defining the Jool instance name and framework.
+`HOST_*` specifies if this wrapper creates some host rules for you. Default to off so you can configure them yourself.
 
-If you want the host itself to send traffic into the translator, set:
-
-- `HOST_ROUTE6` to the NAT64 pool6 prefix, usually `64:ff9b::/96`
-- `HOST_ROUTE4` to the pool4 prefix or address range used by the Jool config
-
-`up.sh` installs those routes through the namespace-side peers, and `down.sh` removes them.
-
-`HOST_MASQUERADE` controls whether the wrapper creates the host-side nftables rule:
-
-- enabled by default
-- keep it enabled for the current veth-behind-host pattern, where the namespace reaches the IPv4 network through the host
-- disable it only if the namespace already has proper routed IPv4 egress and you do not want double NAT
-
-If your JSON uses the `iptables` Jool framework instead of `netfilter`, this project still loads the instance correctly, but you must manage the separate `JOOL` or `JOOL_SIIT` iptables rules yourself. The nftables rule created by `up.sh` is only the host-side masquerade rule from the original TODO.
-
-## Address Reuse Across Instances
-
-The default link addresses can be reused across instances:
-
-- `169.254.64.1 <-> 169.254.64.2`
-- `fe80::64:1/64 <-> fe80::64:2/64`
-
-That works because every instance gets its own namespace and its own veth pair. What must stay unique per instance is the namespace name and the host-side veth name.
+If your JSON uses the `iptables` Jool framework instead of `netfilter`, this project still loads the instance correctly, but you must manage the separate `JOOL` or `JOOL_SIIT` iptables rules yourself.
 
 ## Usage
 
